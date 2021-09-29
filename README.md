@@ -1,36 +1,112 @@
 # simple-general-image-classifier-pytorch
 For when you quickly want to train a classifier to categorize image files.
 
-Usage:
+## Usage:
+
+1.  Train:
+    ```
+    python train.py [dataset_folder] [weights_folder]
+    ```
+
+2.  Eval
+    ```
+    python eval.py [folder_with_images] [weights_folder/mycheckpoint.pt] [output_folder]
+    ```
+
+That's it!
+
+## Example:
+
+For this folder structure:
 
 ```
-python train.py [dataset_folder] [weights_folder]
-```
-```
-python eval.py [folder_with_images] [weights_folder/mycheckpoint.pt] [output_folder]
-```
-
-`dataset_folder` should have sub-folders (classes) of `.png` images:
-
-```
-dataset_folder/
-    cats/
-        0.png
-        1.png
-        ...
-    dogs/
-        0.png
-        1.png
-        ...
+files/
+    dataset_folder/
+        cats/
+            0.png
+            1.png
+            ...
+        dogs/
+            0.png
+            1.png
+            ...
+    unclassified_images/
+        a.png
+        b.png
+        another_folder/
+            c.png
+            d.png
 ```
 
-`eval.py` will look for `.png` files recursively in `folder_with_images`.
+running:
+```
+python train.py files/dataset_folder files/classifier_wieghts --epochs 3 --save_interval 1
+```
 
-`output_folder` will automatically be created if it does not exist and will have the same structure as `dataset_folder`.
+will result in:
+```
+files/
+    dataset_folder/
+        cats/
+            0.png
+            1.png
+            ...
+        dogs/
+            0.png
+            1.png
+            ...
+    unclassified_images/
+        a.png
+        b.png
+        another_folder/
+            c.png
+            d.png
+    classifier_wieghts/
+        E0.pt
+        E1.pt
+        E2.pt
+        Final.pt
+```
 
-By default, a resnet18 classifier is used but the scripts are customizable.
+then running:
 
-Full `--help` output:
+```
+python eval.py files/unclassified_images files/classifier_wieghts/E2.pt files/classified_images/
+```
+
+will result in:
+```
+files/
+    dataset_folder/
+        cats/
+            0.png
+            1.png
+            ...
+        dogs/
+            0.png
+            1.png
+            ...
+    unclassified_images/
+        a.png
+        b.png
+        another_folder/
+            c.png
+            d.png
+    classifier_wieghts/
+        E0.pt
+        E1.pt
+        E2.pt
+        Final.pt
+    classified_images/
+        cats/
+            c.png
+        dogs/
+            a.png
+            b.png
+            d.png
+```
+
+## Full `--help` output:
 
 ```
 usage: train.py [-h] [-d DEVICE] [-ic IN_CHANNELS] [-m MODEL] [-pt]
